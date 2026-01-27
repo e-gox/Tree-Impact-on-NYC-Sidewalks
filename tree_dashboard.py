@@ -41,7 +41,7 @@ sns.set_palette([COLOR_PRIMARY, COLOR_ACCENT])
 
 @st.cache_data
 def get_data():
-    tree = pd.read_csv(r"C:\\Users\\ergig\\OneDrive\\Documents\\Projects\\Tree Data.csv")
+    tree = pd.read_csv(r"C:\\Users\\ergig\\PycharmProjects\\Resume Projects\\data\\Tree Data.csv")
     df = tree[(tree['tree_dbh'] < 40) & (tree['status'] == 'Alive')]
     return df
 
@@ -165,3 +165,4 @@ with st.container():
                     ha='center', fontsize=10, color=COLOR_DARK)
 
     st.pyplot(fig3)
+
