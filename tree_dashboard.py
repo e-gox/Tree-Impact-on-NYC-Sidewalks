@@ -6,92 +6,48 @@ import seaborn as sns
 import matplotlib.ticker as mticker
 import pydeck as pdk
 
+# --- CLEAN CSS: ONLY METRIC READABILITY ---
 st.markdown("""
-    <style>
-        <style>
-    /* Force metric label + value to be readable */
-    div[data-testid="metric-container"] {
-        color: #1A1A1A !important;
-    }
+<style>
+/* Metric container */
+div[data-testid="metric-container"] {
+    color: #1A1A1A !important;
+}
 
-    /* Metric label */
-    div[data-testid="metric-container"] > label {
-        color: #1A1A1A !important;
-        font-size: 1.1rem !important;
-        font-weight: 600 !important;
-    }
+/* Metric label */
+div[data-testid="metric-container"] > label {
+    color: #1A1A1A !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+}
 
-    /* Metric value */
-    div[data-testid="metric-container"] span[data-testid="stMetricValue"] {
-        color: #1A1A1A !important;
-        font-size: 1.6rem !important;
-        font-weight: 700 !important;
-    }
+/* Metric value */
+div[data-testid="metric-container"] span[data-testid="stMetricValue"] {
+    color: #1A1A1A !important;
+    font-size: 1.6rem !important;
+    font-weight: 700 !important;
+}
 
-    /* Delta text (if used) */
-    div[data-testid="metric-container"] span[data-testid="stMetricDelta"] {
-        color: #1A1A1A !important;
-        font-size: 1rem !important;
-        font-weight: 600 !important;
-    }
+/* Metric delta */
+div[data-testid="metric-container"] span[data-testid="stMetricDelta"] {
+    color: #1A1A1A !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+}
 </style>
-        /* App background */
-        .stApp {
-            background-color: #F2F2F2 !important;
-            color: #1A1A1A !important; /* Global text color */
-        }
-
-        /* Main container */
-        div.block-container {
-            background-color: #F2F2F2 !important;
-            padding-top: 2rem;
-            color: #1A1A1A !important;
-        }
-
-        /* Sidebar background + text */
-        section[data-testid="stSidebar"] {
-            background-color: #E6E6E6 !important;
-        }
-        section[data-testid="stSidebar"] * {
-            color: #1A1A1A !important;   /* Make sidebar text readable */
-            font-weight: 500;
-        }
-
-        /* Metric text */
-        div[data-testid="metric-container"] {
-            color: #1A1A1A !important;
-        }
-        div[data-testid="metric-container"] label {
-            color: #1A1A1A !important;
-        }
-        div[data-testid="metric-container"] span {
-            color: #1A1A1A !important;
-        }
-
-        /* Toolbar + decoration */
-        div[data-testid="stToolbar"],
-        div[data-testid="stDecoration"],
-        div[data-testid="stStatusWidget"] {
-            background-color: #F2F2F2 !important;
-        }
-
-        /* Radio + Selectbox labels */
-        label, .stRadio label, .stSelectbox label {
-            color: #1A1A1A !important;
-            font-size: 1rem !important;
-        }
-    </style>
 """, unsafe_allow_html=True)
 
+# --- CHART STYLE ---
 plt.style.use("seaborn-v0_8-darkgrid")
 
 COLOR_PRIMARY = "#2E8B57"
 COLOR_ACCENT = "#FF7F50"
 COLOR_DARK = "#1F4E79"
-CHART_BG = "#F2F2F2"
+CHART_BG = "#FFFFFF"   # clean white background
 
 sns.set_palette([COLOR_PRIMARY, COLOR_ACCENT])
 
+# --- LOAD DATA ---
 @st.cache_data
 def get_data():
     tree = pd.read_csv("data/Tree Data.csv")
@@ -100,8 +56,10 @@ def get_data():
 
 df = get_data()
 
+# --- TITLE ---
 st.title("🌳 Tree Impact on NYC Sidewalks")
 
+# --- FILTERS ---
 borough_options = ['All'] + list(df['borough'].unique())
 selected_borough = st.sidebar.radio("Select Borough:", borough_options)
 
@@ -115,6 +73,7 @@ if selected_species != 'All':
 
 df_select["sidewalk_damage"] = (df_select["sidewalk"] == "Damage").astype(int)
 
+# --- METRICS ---
 tree_count = df_select.shape[0]
 average_dbh = round(df_select["tree_dbh"].mean(), 2) if tree_count > 0 else 0
 damage_count = df_select[df_select["sidewalk_damage"] == 1].shape[0]
@@ -125,6 +84,7 @@ col1.metric("🌲 Tree Count", f"{tree_count:,}")
 col2.metric("📏 Avg Diameter", f"{average_dbh} in")
 col3.metric("⚠️ Damage Risk", f"{risk}%")
 
+# --- INSIGHT CARD ---
 st.markdown(
     f"""
     <div style="padding:15px; background-color:#E8F5E9; border-radius:8px; margin-top:10px;">
@@ -141,12 +101,13 @@ st.markdown(
 
 st.divider()
 
+# --- TOP SPECIES CHART ---
 with st.container():
 
     species_stats = df_select.groupby("spc_common")["tree_dbh"].agg(["count", "mean"])
     top_species_stats = species_stats.sort_values("count", ascending=False).head(10)
-
     top_species_stats = top_species_stats.iloc[::-1]
+
     fig1, ax = plt.subplots(figsize=(10, 6), facecolor=CHART_BG)
     ax.set_facecolor(CHART_BG)
 
@@ -173,8 +134,11 @@ with st.container():
 
     st.pyplot(fig1)
 
+# --- BOXPLOT ---
 with st.container():
+
     custom_palette = {"0": "lightgreen", "1": "darkgreen"}
+
     fig2, ax = plt.subplots(figsize=(8, 5), facecolor=CHART_BG)
     ax.set_facecolor(CHART_BG)
 
@@ -191,6 +155,7 @@ with st.container():
     fig2.tight_layout()
     st.pyplot(fig2)
 
+# --- BOROUGH RISK CHART ---
 with st.container():
 
     borough_risk = df_select.groupby("borough").agg(
@@ -232,6 +197,3 @@ with st.container():
         )
 
     st.pyplot(fig3)
-
-
-
