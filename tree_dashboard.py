@@ -8,6 +8,33 @@ import pydeck as pdk
 
 st.markdown("""
     <style>
+        <style>
+    /* Force metric label + value to be readable */
+    div[data-testid="metric-container"] {
+        color: #1A1A1A !important;
+    }
+
+    /* Metric label */
+    div[data-testid="metric-container"] > label {
+        color: #1A1A1A !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+    }
+
+    /* Metric value */
+    div[data-testid="metric-container"] span[data-testid="stMetricValue"] {
+        color: #1A1A1A !important;
+        font-size: 1.6rem !important;
+        font-weight: 700 !important;
+    }
+
+    /* Delta text (if used) */
+    div[data-testid="metric-container"] span[data-testid="stMetricDelta"] {
+        color: #1A1A1A !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+    }
+</style>
         /* App background */
         .stApp {
             background-color: #F2F2F2 !important;
@@ -205,5 +232,6 @@ with st.container():
         )
 
     st.pyplot(fig3)
+
 
 
