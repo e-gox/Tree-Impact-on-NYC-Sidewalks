@@ -8,18 +8,50 @@ import pydeck as pdk
 
 st.markdown("""
     <style>
+        /* App background */
         .stApp {
             background-color: #F2F2F2 !important;
+            color: #1A1A1A !important; /* Global text color */
         }
+
+        /* Main container */
         div.block-container {
             background-color: #F2F2F2 !important;
             padding-top: 2rem;
+            color: #1A1A1A !important;
         }
+
+        /* Sidebar background + text */
         section[data-testid="stSidebar"] {
             background-color: #E6E6E6 !important;
         }
-        div[data-testid="stToolbar"], div[data-testid="stDecoration"], div[data-testid="stStatusWidget"] {
+        section[data-testid="stSidebar"] * {
+            color: #1A1A1A !important;   /* Make sidebar text readable */
+            font-weight: 500;
+        }
+
+        /* Metric text */
+        div[data-testid="metric-container"] {
+            color: #1A1A1A !important;
+        }
+        div[data-testid="metric-container"] label {
+            color: #1A1A1A !important;
+        }
+        div[data-testid="metric-container"] span {
+            color: #1A1A1A !important;
+        }
+
+        /* Toolbar + decoration */
+        div[data-testid="stToolbar"],
+        div[data-testid="stDecoration"],
+        div[data-testid="stStatusWidget"] {
             background-color: #F2F2F2 !important;
+        }
+
+        /* Radio + Selectbox labels */
+        label, .stRadio label, .stSelectbox label {
+            color: #1A1A1A !important;
+            font-size: 1rem !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -173,4 +205,5 @@ with st.container():
         )
 
     st.pyplot(fig3)
+
 
