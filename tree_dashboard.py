@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.ticker as mticker
 import pydeck as pdk
 
-# --- CLEAN CSS: ONLY METRIC READABILITY ---
+
 st.markdown("""
 <style>
 /* Metric container */
@@ -37,7 +37,7 @@ div[data-testid="metric-container"] span[data-testid="stMetricDelta"] {
 </style>
 """, unsafe_allow_html=True)
 
-# --- CHART STYLE ---
+
 plt.style.use("seaborn-v0_8-darkgrid")
 
 COLOR_PRIMARY = "#2E8B57"
@@ -47,7 +47,7 @@ CHART_BG = "#FFFFFF"   # clean white background
 
 sns.set_palette([COLOR_PRIMARY, COLOR_ACCENT])
 
-# --- LOAD DATA ---
+
 @st.cache_data
 def get_data():
     tree = pd.read_csv("data/Tree Data.csv")
@@ -56,10 +56,9 @@ def get_data():
 
 df = get_data()
 
-# --- TITLE ---
+
 st.title("🌳 Tree Impact on NYC Sidewalks")
 
-# --- FILTERS ---
 borough_options = ['All'] + list(df['borough'].unique())
 selected_borough = st.sidebar.radio("Select Borough:", borough_options)
 
@@ -73,7 +72,6 @@ if selected_species != 'All':
 
 df_select["sidewalk_damage"] = (df_select["sidewalk"] == "Damage").astype(int)
 
-# --- METRICS ---
 tree_count = df_select.shape[0]
 average_dbh = round(df_select["tree_dbh"].mean(), 2) if tree_count > 0 else 0
 damage_count = df_select[df_select["sidewalk_damage"] == 1].shape[0]
@@ -84,24 +82,8 @@ col1.metric("🌲 Tree Count", f"{tree_count:,}")
 col2.metric("📏 Avg Diameter", f"{average_dbh} in")
 col3.metric("⚠️ Damage Risk", f"{risk}%")
 
-# --- INSIGHT CARD ---
-st.markdown(
-    f"""
-    <div style="padding:15px; background-color:#E8F5E9; border-radius:8px; margin-top:10px;">
-        <h4 style="margin-bottom:5px;">Key Insight</h4>
-        <p style="margin:0;">
-            In <b>{selected_borough if selected_borough != 'All' else 'NYC'}</b>, the sidewalk damage risk is 
-            <b>{risk}%</b> among <b>{tree_count:,}</b> trees, with an average diameter of 
-            <b>{average_dbh} inches</b>.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
 st.divider()
 
-# --- TOP SPECIES CHART ---
 with st.container():
 
     species_stats = df_select.groupby("spc_common")["tree_dbh"].agg(["count", "mean"])
@@ -134,7 +116,6 @@ with st.container():
 
     st.pyplot(fig1)
 
-# --- BOXPLOT ---
 with st.container():
 
     custom_palette = {"0": "lightgreen", "1": "darkgreen"}
@@ -155,7 +136,6 @@ with st.container():
     fig2.tight_layout()
     st.pyplot(fig2)
 
-# --- BOROUGH RISK CHART ---
 with st.container():
 
     borough_risk = df_select.groupby("borough").agg(
@@ -197,3 +177,4 @@ with st.container():
         )
 
     st.pyplot(fig3)
+
