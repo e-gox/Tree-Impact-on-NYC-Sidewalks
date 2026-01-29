@@ -100,7 +100,7 @@ with st.container():
     ax.set_xticklabels(top_species_stats.index, rotation=35, ha="right", fontsize=11)
     ax.set_xlabel("Tree Species", fontsize=12)
     ax.set_ylabel("Tree Count", fontsize=12)
-    ax.set_title("Top 10 Tree Species", fontsize=18, fontweight="bold")
+    ax.set_title("Top 10 Tree Species by Diameter", fontsize=18, fontweight="bold")
 
     for i, bar in enumerate(bars):
         avg_dbh = round(top_species_stats["mean"].iloc[i], 1)
@@ -177,4 +177,5 @@ with st.container():
         )
 
     st.pyplot(fig3)
+
 
